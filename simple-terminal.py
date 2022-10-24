@@ -1,10 +1,13 @@
 from cmd import Cmd
 from time import sleep
 import readline
+from random import randint
 
 class AutofictionTerm(Cmd):
 
     name = None
+    birthplace = None
+    regret = None
     memories = None
     current_memory = None
     
@@ -21,11 +24,17 @@ class AutofictionTerm(Cmd):
             print('Memories found:')
             for i in range(len(self.memories)):
                 print(f'{i}: {self.memories[i]}')
-            selection = None
-            while selection not in [str(x) for x in range(len(self.memories))]:
-                selection = input(f'Please select a memory from the list above from 0 to {len(self.memories) - 1}: ')
-            self.current_memory = self.memories[int(selection)]
+            #selection = None
+            #while selection not in [str(x) for x in range(len(self.memories))]:
+                #selection = input(f'Please select a memory from the list above from 0 to {len(self.memories) - 1}: ')
+            print('Personalizing experience ...')
+            sleep(2)
+            selection = randint(0,3)
+            colors = ['green', 'red', 'blue', 'orange']
+            print(f'Based on your name ({self.name}), birthplace ({self.birthplace}), and regret ({self.regret}), please make your way to the {colors[selection]} headset.')
+            self.current_memory = self.memories[selection]
             print(f'Loading memory {self.current_memory}...')
+            print('PLEASE PUT ON HEADSET NOW')
             print('(here some crazy VR stuff would happen...)')
             sleep(1)
     
@@ -61,8 +70,13 @@ class AutofictionTerm(Cmd):
                 while not self.name:
                     self.name = input(f'{self.intro}\n{self.prompt}')
                     if self.name:
-                        print(f'Welcome, {self.name}! You can type \'help\' to get a list of available commands.')
                         self.memories = [f'/home/{self.name}/memory_0', f'/home/{self.name}/memory_1', f'/home/{self.name}/memory_2', f'/home/{self.name}/memory_3']
+                while not self.birthplace:
+                    self.birthplace = input(f'Hello, {self.name}. Where are you from? : ')
+                while not self.regret:
+                    self.regret = input(f'Ah, {self.birthplace} is a nice place. Now, what is your greatest regret? : ')
+                if self.name and self.birthplace and self.regret:
+                    print(f'Welcome, {self.name}! You can type \'help\' to get a list of available commands.')
                 if self.cmdqueue:
                     line = self.cmdqueue.pop(0)
                 else:
