@@ -103,5 +103,5 @@ class AutofictionTerm(Cmd):
 if __name__ == '__main__':
     terminal = AutofictionTerm()
     intro = 'Welcome to the afterlife. Please tell me your name.'
-    prompt = '#> '
+    prompt = '~! '
     terminal.cmdloop(intro=intro, prompt=prompt)
