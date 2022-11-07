@@ -9,7 +9,7 @@ class AutofictionTerm(Cmd):
     
     text = '''
     Hello, and uh, sorry about everything. But hey, everyone’s gotta go sometime, right? 
-    Anyways, here’s the deal: Everyone is entitled to the whole “life flashing before your eyes'' thing. 
+    Anyways, here’s the deal: Everyone is entitled to the whole "life flashing before your eyes" thing. 
     
     However, we have a bit of a pickle. 
     
@@ -23,7 +23,7 @@ class AutofictionTerm(Cmd):
     The clock’s ticking.
     '''
     start = False
-    time = 3
+    time = 120
     progress = 0
     
     @staticmethod
@@ -42,7 +42,7 @@ class AutofictionTerm(Cmd):
         print('\r [{0}] {1}%'.format('#'*(self.progress//10), self.progress), end='')
     
     def termcountdown(self):
-        beep = sa.WaveObject.from_wave_file('resources/beep.wav')
+        beep = sa.WaveObject.from_wave_file('resources/audio/beep.wav')
         print('\n\nTime remaining:')
         while self.time >= 0:
             mins, secs = divmod(self.time, 60)
@@ -66,7 +66,7 @@ class AutofictionTerm(Cmd):
                     line = input(f'{self.intro}\n{self.prompt}')
                     self.start = True
                 if(self.time > 0):
-                    #self.termprint()
+                    self.termprint()
                     while self.progress <= 100:
                         self.termloadbar()
                         self.progress += 1
