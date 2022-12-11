@@ -1,9 +1,10 @@
 from cmd import Cmd
 from time import sleep
 import sys
+import os
 import readline
 from random import random
-import simpleaudio as sa
+#import simpleaudio as sa
 
 class AutofictionTerm(Cmd):
     
@@ -23,7 +24,8 @@ class AutofictionTerm(Cmd):
     The clock’s ticking.
     '''
     start = False
-    time = 120
+    time = 150
+    speed = 80
     progress = 0
     
     @staticmethod
@@ -31,26 +33,33 @@ class AutofictionTerm(Cmd):
         return True
     
     def termprint(self):
-        speed = 80
         for l in self.text:
             sys.stdout.write(l)
             sys.stdout.flush()
-            sleep(random()*10.0/speed)
+            sleep(random()*10.0/self.speed)
         print('')
         
     def termloadbar(self):
         print('\r [{0}] {1}%'.format('#'*(self.progress//10), self.progress), end='')
     
     def termcountdown(self):
-        beep = sa.WaveObject.from_wave_file('resources/audio/beep.wav')
+        #beep = sa.WaveObject.from_wave_file('resources/audio/beep.wav')
         print('\n\nTime remaining:')
         while self.time >= 0:
             mins, secs = divmod(self.time, 60)
             print('\r {:02d}:{:02d}'.format(mins, secs), end='')
-            beep.play()
+            #beep.play()
             sleep(1.3)
             self.time -= 1
         print('\nTime\'s up.')
+        
+    def preloop(self):
+        clear = lambda : os.system('tput reset')
+        clear()
+    
+    def postloop(self):
+        clear = lambda : os.system('tput reset')
+        clear()
 
     def cmdloop(self, intro, prompt):
         self.preloop()
@@ -74,8 +83,8 @@ class AutofictionTerm(Cmd):
                     self.termcountdown()
                 if self.cmdqueue:
                     line = self.cmdqueue.pop(0)
-                else:
-                    line = input(self.prompt)
+                #else:
+                #    line = input(self.prompt)
             except EOFError:
                 line = 'EOF'
             except KeyboardInterrupt:
@@ -83,6 +92,7 @@ class AutofictionTerm(Cmd):
             line = self.precmd(line)
             stop = self.onecmd(line)
             stop = self.postcmd(stop, line)
+            stop = True
         self.postloop()
 
     def onecmd(self, line):
