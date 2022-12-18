@@ -28,7 +28,7 @@ class AutofictionTerm(Cmd):
     start = False
     videos = ['memory_baby.avi', 'memory_teen.avi', 'memory_office.avi', 'memory_end.avi', 'memory_moon.mp4']
     time = 150
-    speed = 800
+    speed = 80
     progress = 0
     
     @staticmethod
@@ -53,25 +53,8 @@ class AutofictionTerm(Cmd):
             sleep(1.3)
             self.time -= 1
         print('\nTime\'s up.')
-        
-    def playvideo(self):
-        print('\n\nPlaying memory_001.mp4...')
-        cap = cv2.VideoCapture(self.video)
-        ret, frame = cap.read()
-        while(1):
-            ret, frame = cap.read()
-            if frame is not None:
-                cv2.imshow('memories',frame)
-            if cv2.waitKey(1) & 0xFF == ord('q') or ret==False or not frame.any():
-                cap.release()
-                cv2.destroyAllWindows()
-                break
 
-    def playvideo2(self):
-        '''
-        pipes = dict(stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        mplayer = Popen(['mplayer', self.video], **pipes)
-        '''
+    def playvideo(self):
         cmd = 'mplayer -fixed-vo -framedrop resources/video/memory_open.avi resources/video/' + ' resources/video/'.join(random.sample(self.videos, len(self.videos)))
         print()
         print(cmd)
@@ -106,8 +89,7 @@ class AutofictionTerm(Cmd):
                         self.termloadbar()
                         self.progress += 1
                         sleep(0.05)
-                    #self.termcountdown()
-                    self.playvideo2()
+                    self.playvideo()
                 if self.cmdqueue:
                     line = self.cmdqueue.pop(0)
                 #else:
