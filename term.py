@@ -1,9 +1,11 @@
 from cmd import Cmd
 from time import sleep
+from subprocess import Popen, PIPE
 import sys
 import os
+import cv2
 import readline
-from random import random
+import random
 #import simpleaudio as sa
 
 class AutofictionTerm(Cmd):
@@ -24,8 +26,9 @@ class AutofictionTerm(Cmd):
     The clock’s ticking.
     '''
     start = False
+    videos = ['memory_baby.avi', 'memory_teen.avi', 'memory_office.avi', 'memory_end.avi', 'memory_moon.mp4']
     time = 150
-    speed = 80
+    speed = 800
     progress = 0
     
     @staticmethod
@@ -36,23 +39,46 @@ class AutofictionTerm(Cmd):
         for l in self.text:
             sys.stdout.write(l)
             sys.stdout.flush()
-            sleep(random()*10.0/self.speed)
+            sleep(random.random()*10.0/self.speed)
         print('')
         
     def termloadbar(self):
         print('\r [{0}] {1}%'.format('#'*(self.progress//10), self.progress), end='')
     
     def termcountdown(self):
-        #beep = sa.WaveObject.from_wave_file('resources/audio/beep.wav')
         print('\n\nTime remaining:')
         while self.time >= 0:
             mins, secs = divmod(self.time, 60)
             print('\r {:02d}:{:02d}'.format(mins, secs), end='')
-            #beep.play()
             sleep(1.3)
             self.time -= 1
         print('\nTime\'s up.')
         
+    def playvideo(self):
+        print('\n\nPlaying memory_001.mp4...')
+        cap = cv2.VideoCapture(self.video)
+        ret, frame = cap.read()
+        while(1):
+            ret, frame = cap.read()
+            if frame is not None:
+                cv2.imshow('memories',frame)
+            if cv2.waitKey(1) & 0xFF == ord('q') or ret==False or not frame.any():
+                cap.release()
+                cv2.destroyAllWindows()
+                break
+
+    def playvideo2(self):
+        '''
+        pipes = dict(stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        mplayer = Popen(['mplayer', self.video], **pipes)
+        '''
+        cmd = 'mplayer -fixed-vo -framedrop resources/video/memory_open.avi resources/video/' + ' resources/video/'.join(random.sample(self.videos, len(self.videos)))
+        print()
+        print(cmd)
+        print()
+        sleep(1)
+        os.system(cmd)
+
     def preloop(self):
         clear = lambda : os.system('tput reset')
         clear()
@@ -80,7 +106,8 @@ class AutofictionTerm(Cmd):
                         self.termloadbar()
                         self.progress += 1
                         sleep(0.05)
-                    self.termcountdown()
+                    #self.termcountdown()
+                    self.playvideo2()
                 if self.cmdqueue:
                     line = self.cmdqueue.pop(0)
                 #else:
